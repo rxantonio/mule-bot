@@ -1,0 +1,59 @@
+{
+    "type": "AdaptiveCard",
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "version": "1.3",
+    "body": [
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "url": "https://community.meraki.com/t5/image/serverpage/image-id/293i186DCEFAE0E7BE39/image-size/large/is-moderation-mode/true?v=v2&px=999",
+                            "size": "Small",
+                            "style": "Person"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Mule Has Been Forwarded",
+                            "horizontalAlignment": "Center",
+                            "size": "Large",
+                            "weight": "Bolder",
+                            "wrap": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "FactSet",
+            "facts": [
+                {
+                    "title": "JIRA Number:",
+                    "value": "SM-####"
+                },
+                {
+                    "title": "Case Number:",
+                    "value": "####"
+                },
+                {
+                    "title": "Title:",
+                    "value": "New Mule Title"
+                },
+                {
+                    "title": "Severity:",
+                    "value": "sev#"
+                }
+            ]
+        }
+    ]
+}
