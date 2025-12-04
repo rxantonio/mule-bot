@@ -4,26 +4,24 @@ import requests
 from requests.auth import HTTPBasicAuth
 import time
 
-
-def fetch_all_mule_issues_with_token():
+def fetch_all_mule_issues_with_token(max_retries=3, retry_delay=5):
     """
     Queries the JIRA API for all 'mule' type issues with specific statuses,
     handling pagination using nextPageToken until all pages are retrieved.
+    Retries on exceptions up to max_retries times before giving up.
     Returns a list of dictionaries containing relevant issue details.
     """
     url = "https://meraki.atlassian.net/rest/api/3/search/jql"
     auth = HTTPBasicAuth(os.environ['JIRA_USER'], os.environ['JIRA_KEY'])
     headers = {"Accept": "application/json"}
     jql_query = (
-        'type = mule AND ((status = "Needs Verification" or status = "closed" or status = "Support Pending") OR (status = "New" AND statusCategoryChangedDate!= null) ) and statusCategoryChangedDate >= -100d order by statusCategoryChangedDate'
+        'type = mule AND ((status = "closed" and statusCategoryChangedDate >= -100d) or (status = "Needs Verification" or status = "Support Pending") OR (status = "New" AND statusCategoryChangedDate!= null))'
     )
     max_results_per_page = 50
     all_issues = []
     next_page_token = None
     is_last = False
     page_count = 0
-
-    print("Starting fetch_all_mule_issues_with_token function...")
 
     while not is_last:
         page_count += 1
@@ -35,13 +33,20 @@ def fetch_all_mule_issues_with_token():
         if next_page_token:
             query_params['nextPageToken'] = next_page_token
 
-        try:
-            response = requests.get(url, headers=headers, params=query_params, auth=auth)
-            response.raise_for_status()
-            response_json = response.json()
-        except (requests.exceptions.RequestException, json.JSONDecodeError) as e:
-            print(f"Failed to fetch or parse JIRA issues on page {page_count}: {e}")
-            break
+        attempt = 0
+        while attempt < max_retries:
+            try:
+                response = requests.get(url, headers=headers, params=query_params, auth=auth)
+                response.raise_for_status()
+                response_json = response.json()
+                break  # Exit retry loop on success
+            except (requests.exceptions.RequestException, json.JSONDecodeError) as e:
+                attempt += 1
+                print(f"Attempt {attempt} failed to fetch or parse JIRA issues on page {page_count}: {e}")
+                if attempt == max_retries:
+                    print("Max retries reached. Skipping this page.")
+                    return all_issues  # Or you can choose to continue to next page or raise error
+                time.sleep(retry_delay)  # Wait before retrying
 
         issues = response_json.get('issues', [])
         for idx, issue in enumerate(issues, start=1):
@@ -56,7 +61,8 @@ def fetch_all_mule_issues_with_token():
                 'CaseNumber': fields.get('customfield_10271'),
                 'MuleLink': fields.get('customfield_10419'),
                 'Key': fields.get('project', {}).get('key'),
-                'Severity': severity_value
+                'Severity': severity_value,
+                'Priority': fields.get('priority', {}).get('id')
             }
             all_issues.append(issue_data)
 
@@ -64,7 +70,6 @@ def fetch_all_mule_issues_with_token():
         next_page_token = response_json.get('nextPageToken')
         is_last = response_json.get('isLast', True)  # Default to True if not present
 
-    print(f"Finished fetching issues. Total issues retrieved: {len(all_issues)}")
     return all_issues
 
 

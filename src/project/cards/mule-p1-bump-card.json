@@ -12,7 +12,7 @@
                     "items": [
                         {
                             "type": "Image",
-                            "url": "https://community.meraki.com/t5/image/serverpage/image-id/293i186DCEFAE0E7BE39/image-size/large/is-moderation-mode/true?v=v2&px=999",
+                            "url": "https://t3.ftcdn.net/jpg/02/35/26/30/360_F_235263034_miJw2igmixo7ymCqhHZ7c8wp9kaujzfM.jpg",
                             "size": "Small",
                             "style": "Person"
                         }
@@ -24,11 +24,13 @@
                     "items": [
                         {
                             "type": "TextBlock",
-                            "text": "Mule Has Been Closed!",
+                            "text": "Mule Has Been Bumped to P1",
                             "horizontalAlignment": "Center",
                             "size": "Large",
                             "weight": "Bolder",
-                            "wrap": true
+                            "wrap": true,
+                            "fontType": "Default",
+                            "color": "Warning"
                         }
                     ]
                 }

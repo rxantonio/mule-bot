@@ -54,6 +54,10 @@
                 {
                     "title": "Severity:",
                     "value": "sev#"
+                },
+                {
+                    "title": "Priority:",
+                    "value": "P: "
                 }
             ]
         }

@@ -46,8 +46,14 @@ def SendMessage(json_data, product_key):
         room_id = WEBEX_ROOM_IDS_BETA.get('MS', default_room_id)
     elif product_key in ('MV', 'MT'):
         room_id = WEBEX_ROOM_IDS_BETA.get('MV', default_room_id)
+    elif product_key in ('MX'):
+        room_id = WEBEX_ROOM_IDS_BETA.get('MX', default_room_id)
+    elif product_key in ('MR'):
+        room_id = WEBEX_ROOM_IDS_BETA.get('MR', default_room_id)
+    elif product_key in ('Sev1'):
+        room_id = WEBEX_ROOM_IDS_BETA.get('Sev1', default_room_id)    
     else:
-        room_id = WEBEX_ROOM_IDS_BETA.get(product_key, default_room_id)
+        room_id = WEBEX_ROOM_IDS_BETA.get('Cloud', default_room_id) #This might need to be changed. temporary
 
     url = 'https://webexapis.com/v1/messages'
     headers = {
@@ -81,12 +87,14 @@ def IterateThroughListOfMules(mule_data):
             issue['JiraTitle'],
             issue['CaseNumber'],
             issue['MuleLink'],
-            issue['Severity']
+            issue['Severity'],
+            issue['Priority']
         )
         
         product_key = issue['Key']
         mule_severity = issue['Severity']
         mule_status = issue['JiraStatus']
+        mule_priority = issue['Priority']
 
         # Send message to the product-specific room
         SendMessage(message, product_key)
@@ -94,9 +102,11 @@ def IterateThroughListOfMules(mule_data):
         # If severity is 'Severity 1 - Major Impact' and status is 'New', send to Sev1 room as well
         if mule_severity == 'Severity 1 - Major Impact' and mule_status == 'New':
             SendMessage(message, 'Sev1')
+        elif mule_priority == '1' and mule_status == 'New':
+            SendMessage(message, 'Sev1')
 
 
-def ComposeAdaptiveCard(JiraNumber, Status, Title, CaseNumber, MuleLink, Severity):
+def ComposeAdaptiveCard(JiraNumber, Status, Title, CaseNumber, MuleLink, Severity,Priority):
     """
     Composes an adaptive card JSON object based on the issue status and severity.
     Loads the appropriate card template, fills in the details, and returns the card.
@@ -104,6 +114,7 @@ def ComposeAdaptiveCard(JiraNumber, Status, Title, CaseNumber, MuleLink, Severit
     # Map statuses to their corresponding card template file paths
     card_files = {
         ('New', 'Severity 1 - Major Impact'): "src/project/cards/mule-created-sev1-card.json",
+        ('New', 'P1'): "src/project/cards/mule-p1-bump-card.json",
         ('New', None): "src/project/cards/mule-created-card.json",
         ('Support Pending', None): "src/project/cards/mule-sp-card.json",
         ('Needs Verification', None): "src/project/cards/mule-nv-card.json",
@@ -114,6 +125,8 @@ def ComposeAdaptiveCard(JiraNumber, Status, Title, CaseNumber, MuleLink, Severit
     card_file = None
     if Status == 'New' and Severity == 'Severity 1 - Major Impact':
         card_file = card_files[('New', 'Severity 1 - Major Impact')]
+    elif Status == 'New' and Priority == '1':
+        card_file = card_files[('New', 'P1')]
     elif Status == 'New':
         card_file = card_files[('New', None)]
     else:
@@ -137,6 +150,7 @@ def ComposeAdaptiveCard(JiraNumber, Status, Title, CaseNumber, MuleLink, Severit
     facts[1]['value'] = f'[{str_case_number}](https://meraki.my.salesforce.com/{str_mule_link})'
     facts[2]['value'] = Title
     facts[3]['value'] = Severity
+    facts[4]['value'] = Priority
 
     return card
 
