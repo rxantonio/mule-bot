@@ -15,7 +15,7 @@ def fetch_all_mule_issues_with_token(max_retries=3, retry_delay=5):
     auth = HTTPBasicAuth(os.environ['JIRA_USER'], os.environ['JIRA_KEY'])
     headers = {"Accept": "application/json"}
     jql_query = (
-        'type = mule AND ((status = "closed" and statusCategoryChangedDate >= -100d) or (status = "Needs Verification" or status = "Support Pending") OR (status = "New" AND statusCategoryChangedDate!= null))'
+        'type = mule AND ((status = "closed" and statusCategoryChangedDate >= -100d) or status in("Needs Verification","Support Pending", "Engineering Pending",Blocked, Deferred,"To Do") OR (status = "New" AND statusCategoryChangedDate!= null))'
     )
     max_results_per_page = 50
     all_issues = []
@@ -62,7 +62,8 @@ def fetch_all_mule_issues_with_token(max_retries=3, retry_delay=5):
                 'MuleLink': fields.get('customfield_10419'),
                 'Key': fields.get('project', {}).get('key'),
                 'Severity': severity_value,
-                'Priority': fields.get('priority', {}).get('id')
+                'Priority': fields.get('priority', {}).get('id'),
+                'Description': fields.get('description')
             }
             all_issues.append(issue_data)
 

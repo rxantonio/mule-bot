@@ -3,7 +3,7 @@
 # List of seed Issues that I can modify in real time:
 seed_data =[
     {
-        'JiraNumber': 'MR-66517',
+        'JiraNumber': 'MR-6656565',
         'JiraTitle': 'Unicast ARP replies are not subjected to L2 Isolation when the Allow List is used',
         'JiraStatus': 'New',
         'CaseNumber': '13082428',
