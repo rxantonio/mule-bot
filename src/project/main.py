@@ -196,7 +196,7 @@ def jira_monitor_loop():
                     if changes:
                         monitor_stats["last_change_detected"] = timestamp
                         monitor_stats["last_changes_list"] = changes 
-                        logger.info(f"Detected {len(changes)} changes.")
+                        logger.info(f"Detected {len(changes)} changes")
                         IterateThroughListOfMules(changes)
                     
                     # Update master list only if it passes basic validation

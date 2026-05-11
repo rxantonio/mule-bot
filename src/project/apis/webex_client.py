@@ -16,6 +16,7 @@ WEBEX_ROOM_IDS = {
     'Sev1': 'Y2lzY29zcGFyazovL3VzL1JPT00vZTM2ODI2YTAtOWRlNS0xMWVmLWI5MTctMzMwOTg4YmJjY2Q1',
     'TEST': 'Y2lzY29zcGFyazovL3VzL1JPT00vMTNmZjgyZTAtZWUwYS0xMWVlLWFjMzYtZjU3YzlkMDJkYWNi',
     'FRTENG': 'Y2lzY29zcGFyazovL3VzL1JPT00vNGNhMmI0YjAtMjllMC0xMWYwLThkNzUtMDc5NWY5NDUzZWVi',
+    'MCC': 'Y2lzY29zcGFyazovL3VzL1JPT00vZjY3M2JjMzAtMWYwYS0xMWYxLTkzNmMtYTE1MTA5YTUxMjdl',
     'Alpha': 'Y2lzY29zcGFyazovL3VzL1JPT00vMTNmZjgyZTAtZWUwYS0xMWVlLWFjMzYtZjU3YzlkMDJkYWNi'
 }
 
@@ -50,6 +51,8 @@ def SendMessage(json_data, product_key):
         room_id = WEBEX_ROOM_IDS_BETA.get('MX', default_room_id)
     elif product_key in ('MR'):
         room_id = WEBEX_ROOM_IDS_BETA.get('MR', default_room_id)
+    elif product_key in ('MCC'):
+        room_id = WEBEX_ROOM_IDS_BETA.get('MCC', default_room_id)
     elif product_key in ('Sev1'):
         room_id = WEBEX_ROOM_IDS_BETA.get('Sev1', default_room_id)    
     else:
