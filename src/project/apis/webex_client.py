@@ -51,6 +51,14 @@ def SendMessage(json_data, product_key):
         room_id = WEBEX_ROOM_IDS.get('MX', default_room_id)
     elif product_key in ('MR'):
         room_id = WEBEX_ROOM_IDS.get('MR', default_room_id)
+    elif product_key in ('SM'):
+        room_id = WEBEX_ROOM_IDS.get('SM', default_room_id)
+    elif product_key in ('MG'):
+        room_id = WEBEX_ROOM_IDS.get('MG', default_room_id)
+    elif product_key in ('MCC'):
+        room_id = WEBEX_ROOM_IDS.get('MCC', default_room_id)
+    elif product_key in ('FRTENG'):
+        room_id = WEBEX_ROOM_IDS.get('FRTENG', default_room_id)
     elif product_key in ('Sev1'):
         room_id = WEBEX_ROOM_IDS.get('Sev1', default_room_id)    
     else:
