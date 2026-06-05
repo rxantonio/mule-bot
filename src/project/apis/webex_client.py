@@ -13,6 +13,7 @@ WEBEX_ROOM_IDS = {
     'SM': 'Y2lzY29zcGFyazovL3VzL1JPT00vYTNkZjZiYTAtMTNhMy0xMWVmLTk4YTAtYmZjMWM1Y2FlMmU5',
     'Cloud': 'Y2lzY29zcGFyazovL3VzL1JPT00vOWNlMzNlMzAtMTNhMy0xMWVmLWFiZGItYjU0NzdmZTU5Y2U5',
     'MG': 'Y2lzY29zcGFyazovL3VzL1JPT00vNjUyMzFiZDAtMjgyNy0xMWVmLTkzZTgtZmIwZDgwMmVmM2Rj',
+    'MCC': 'Y2lzY29zcGFyazovL3VzL1JPT00vZjY3M2JjMzAtMWYwYS0xMWYxLTkzNmMtYTE1MTA5YTUxMjdl',
     'Sev1': 'Y2lzY29zcGFyazovL3VzL1JPT00vZTM2ODI2YTAtOWRlNS0xMWVmLWI5MTctMzMwOTg4YmJjY2Q1',
     'TEST': 'Y2lzY29zcGFyazovL3VzL1JPT00vMTNmZjgyZTAtZWUwYS0xMWVlLWFjMzYtZjU3YzlkMDJkYWNi',
     'FRTENG': 'Y2lzY29zcGFyazovL3VzL1JPT00vNGNhMmI0YjAtMjllMC0xMWYwLThkNzUtMDc5NWY5NDUzZWVi',
@@ -38,22 +39,22 @@ def SendMessage(json_data, product_key):
     associated with the product_key.
     """
     # Default room ID if product_key not found
-    default_room_id = WEBEX_ROOM_IDS_BETA.get('Alpha')
+    default_room_id = WEBEX_ROOM_IDS.get('Alpha')
 
     # Handle special cases where multiple keys map to the same room ID
     # For keys with multiple aliases, check explicitly
     if product_key in ('MS', 'MARS'):
-        room_id = WEBEX_ROOM_IDS_BETA.get('MS', default_room_id)
+        room_id = WEBEX_ROOM_IDS.get('MS', default_room_id)
     elif product_key in ('MV', 'MT'):
-        room_id = WEBEX_ROOM_IDS_BETA.get('MV', default_room_id)
+        room_id = WEBEX_ROOM_IDS.get('MV', default_room_id)
     elif product_key in ('MX'):
-        room_id = WEBEX_ROOM_IDS_BETA.get('MX', default_room_id)
+        room_id = WEBEX_ROOM_IDS.get('MX', default_room_id)
     elif product_key in ('MR'):
-        room_id = WEBEX_ROOM_IDS_BETA.get('MR', default_room_id)
+        room_id = WEBEX_ROOM_IDS.get('MR', default_room_id)
     elif product_key in ('Sev1'):
-        room_id = WEBEX_ROOM_IDS_BETA.get('Sev1', default_room_id)    
+        room_id = WEBEX_ROOM_IDS.get('Sev1', default_room_id)    
     else:
-        room_id = WEBEX_ROOM_IDS_BETA.get('Cloud', default_room_id) #This might need to be changed. temporary
+        room_id = WEBEX_ROOM_IDS.get('Cloud', default_room_id) #This might need to be changed. temporary
 
     url = 'https://webexapis.com/v1/messages'
     headers = {
@@ -105,6 +106,8 @@ def IterateThroughListOfMules(mule_data):
         elif mule_priority == '1' and mule_status == 'New':
             SendMessage(message, 'Sev1')
 
+        if "global overview" in issue['JiraTitle'].lower():
+            SendMessage(message, 'MCC')
 
 def ComposeAdaptiveCard(JiraNumber, Status, Title, CaseNumber, MuleLink, Severity,Priority):
     """

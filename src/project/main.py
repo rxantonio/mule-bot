@@ -12,7 +12,7 @@ import importlib
 
 logger = setup_logger(__name__)
 
-def is_list_complete(new_list, old_list, min_expected=10, completeness_ratio=0.8): 
+def is_list_complete(new_list, old_list, min_expected=100, completeness_ratio=0.8): 
     # Check minimum expected number of issues CHANGE THIS BACK TO 100 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if len(new_list) < min_expected:
         return False
