@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+from pathlib import Path
 
 # Define a dictionary to store all WebEx room IDs
 WEBEX_ROOM_IDS = {
@@ -122,14 +123,18 @@ def ComposeAdaptiveCard(JiraNumber, Status, Title, CaseNumber, MuleLink, Severit
     Composes an adaptive card JSON object based on the issue status and severity.
     Loads the appropriate card template, fills in the details, and returns the card.
     """
+    # Resolve templates relative to this module so paths work whether the app
+    # runs from the repository root or from the flattened container image.
+    card_dir = Path(__file__).resolve().parent.parent / "cards"
+
     # Map statuses to their corresponding card template file paths
     card_files = {
-        ('New', 'Severity 1 - Major Impact'): "src/project/cards/mule-created-sev1-card.json",
-        ('New', 'P1'): "src/project/cards/mule-p1-bump-card.json",
-        ('New', None): "src/project/cards/mule-created-card.json",
-        ('Support Pending', None): "src/project/cards/mule-sp-card.json",
-        ('Needs Verification', None): "src/project/cards/mule-nv-card.json",
-        ('Closed', None): "src/project/cards/mule-closed-card.json"
+        ('New', 'Severity 1 - Major Impact'): card_dir / "mule-created-sev1-card.json",
+        ('New', 'P1'): card_dir / "mule-p1-bump-card.json",
+        ('New', None): card_dir / "mule-created-card.json",
+        ('Support Pending', None): card_dir / "mule-sp-card.json",
+        ('Needs Verification', None): card_dir / "mule-nv-card.json",
+        ('Closed', None): card_dir / "mule-closed-card.json"
     }
 
     # Determine which card file to load
@@ -164,5 +169,4 @@ def ComposeAdaptiveCard(JiraNumber, Status, Title, CaseNumber, MuleLink, Severit
     facts[4]['value'] = Priority
 
     return card
-
 

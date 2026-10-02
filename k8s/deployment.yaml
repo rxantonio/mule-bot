@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mule-bot
+  namespace: cead-bems-integration
+  labels:
+    app.kubernetes.io/name: mule-bot
+spec:
+  # This worker polls Jira continuously; avoid overlapping old/new instances
+  # during an update so they do not send duplicate Webex notifications.
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mule-bot
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mule-bot
+    spec:
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+      containers:
+        - name: mule-bot
+          image: docker.artifactory.ikarem.io/user/riantoni/mule-bot:dev
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: mule-bot-secrets
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 512Mi
